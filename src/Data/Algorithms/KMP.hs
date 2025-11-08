@@ -24,6 +24,7 @@ module Data.Algorithms.KMP
   , build
   , matchSingle
   , match
+  , matchOne
   ) where
 
 import Data.Array
@@ -111,3 +112,12 @@ match table str = [ 0 | len table == 0 ] ++ go (1 - len table) 0 str
     go i j (s:ss) = case matchSingle table j s of
       (False, j') -> go (i + 1) j' ss
       (True, j')  -> i : go (i + 1) j' ss
+
+matchOne :: Eq a => Table a -> [a] -> Maybe Int
+matchOne table = go (1 - len table) 0
+  where
+    go i j [] = Nothing
+    go i j (s:ss) = case matchSingle table j s of
+      (False, j') -> go (i + 1) j' ss
+      (True, j') -> Just i
+
